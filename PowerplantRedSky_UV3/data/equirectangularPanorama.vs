@@ -1,16 +1,15 @@
 attribute vec3 uv_vertexAttrib;
 attribute vec2 uv_texCoordAttrib0;
-uniform vec4 uv_cameraPos;
+
 uniform mat4 uv_modelViewInverseMatrix;
 uniform mat4 uv_modelViewProjectionMatrix;
-uniform mat4 uv_scene2ObjectMatrix;
-uniform float Scale;
-uniform vec3 RotationAxis;
-uniform float RotationAngle;
+uniform vec4 Rotation;
 
-const float PI = 3.1415926535897932384626433;
-const float DEG2PI = PI / 180.0;
+const float PI = 3.1415926;
+const float DEG2PI = PI/180;
 
+out float DistanceFade;
+out vec3 VertexDir;
 out vec2 TexCoord;
 
 mat4 getRotationMatrix(vec3 axis, float angle)
@@ -26,15 +25,17 @@ mat4 getRotationMatrix(vec3 axis, float angle)
                 0.0,                                0.0,                                0.0,                                1.0);
 }
 
-void main()
+void main(void)
 {  
-  //Calculate the distance between the camera and the center of the panorama to fad out the panorama
-  //float cameraDistance = length((uv_modelViewInverseMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz) / Scale; 
-  //DistanceFade = smoothstep(1, 0, cameraDistance);  
-  vec3 center =   (uv_scene2ObjectMatrix * uv_cameraPos).xyz;
-  //Rotate the sphere the specified angle about the specified axis
-  gl_Position = uv_modelViewProjectionMatrix *(Scale *(getRotationMatrix(RotationAxis, RotationAngle)*vec4(uv_vertexAttrib,0.0))+vec4(center, 1.0));    		  
+
+  float cameraDistance = length((uv_modelViewInverseMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz) ; 
+  DistanceFade = smoothstep(1, 0, cameraDistance);  
   
-  //Pass through the texture coordinates
-  TexCoord = uv_texCoordAttrib0;  
+  float angle = Rotation.w * DEG2PI;
+  vec3 axis = Rotation.xyz;  
+  gl_Position = uv_modelViewProjectionMatrix * getRotationMatrix(axis, angle) * vec4(uv_vertexAttrib, 1.0);    		  
+    
+  VertexDir = uv_vertexAttrib;
+  TexCoord = uv_texCoordAttrib0;
+  
 }
