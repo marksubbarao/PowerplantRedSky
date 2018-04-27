@@ -1,5 +1,5 @@
-attribute vec3 uv_vertexAttrib;
-attribute vec2 uv_texCoordAttrib0;
+in vec3 uv_vertexAttrib;
+in vec2 uv_texCoordAttrib0;
 
 uniform mat4 uv_modelViewInverseMatrix;
 uniform mat4 uv_modelViewProjectionMatrix;
@@ -33,7 +33,7 @@ void main(void)
   
   float angle = Rotation.w * DEG2PI;
   vec3 axis = Rotation.xyz;  
-  gl_Position = uv_modelViewProjectionMatrix *  vec4(uv_vertexAttrib, 1.0);    		  
+  gl_Position = uv_modelViewProjectionMatrix *  getRotationMatrix(axis,angle) *vec4(uv_vertexAttrib, 1.0);    		  
     
   VertexDir = uv_vertexAttrib;
   TexCoord = uv_texCoordAttrib0;

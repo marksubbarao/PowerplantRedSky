@@ -105,5 +105,6 @@ void main(void)
 	}
 	
 	fragColor += sampleColor;
-	fragColor.a*=alpha*uv_fade;
+	//fragColor.a*=alpha*uv_fade;
+	fragColor=vec4(0.5);
 }
