@@ -1,5 +1,4 @@
 in vec3 uv_vertexAttrib;
-in vec2 uv_texCoordAttrib0;
 
 uniform mat4 uv_modelViewInverseMatrix;
 uniform mat4 uv_modelViewProjectionMatrix;
@@ -11,6 +10,7 @@ const float DEG2PI = PI/180;
 out float DistanceFade;
 out vec3 VertexDir;
 out vec2 TexCoord;
+uniform vec3 posOffset;
 
 mat4 getRotationMatrix(vec3 axis, float angle)
 {
@@ -33,9 +33,9 @@ void main(void)
   
   float angle = Rotation.w * DEG2PI;
   vec3 axis = Rotation.xyz;  
-  gl_Position = uv_modelViewProjectionMatrix *  getRotationMatrix(axis,angle) *vec4(uv_vertexAttrib, 1.0);    		  
+  gl_Position = uv_modelViewProjectionMatrix *  getRotationMatrix(axis,angle) *vec4(posOffset + uv_vertexAttrib, 1.0);    		  
     
   VertexDir = uv_vertexAttrib;
-  TexCoord = uv_texCoordAttrib0;
+  TexCoord = (uv_vertexAttrib.xz * vec2(-0.5, 1.)) + vec2(0.5,0.5);
   
 }
